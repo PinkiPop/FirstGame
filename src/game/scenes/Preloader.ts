@@ -34,9 +34,10 @@ export class Preloader extends Scene
         this.load.image('logo', 'logo.png');
         this.load.image('star', 'star.png');
         this.load.image('background3', 'background3.png')
-        this.load.spritesheet('player', 'player1.png');
-        this.load.spritesheet('enemy', 'enemy.png');
-    
+        this.load.audio('mainMenuAudio', 'mainMenuAudio.mp3')
+        setTimeout(()=>{
+            return 1;
+        }, 1000)
     }
 
     create ()

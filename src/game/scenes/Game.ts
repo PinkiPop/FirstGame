@@ -36,12 +36,6 @@ export class Game extends Scene
       "Prepare to be defeated... Finally!",
     ];
 
-    this.load.on('complete', () => {
-      this.createPlayerSprite();
-      this.createEnemySprite();
-    });
-    this.load.start();
-
 
     this.initiateEnemyAttack();
 
@@ -99,14 +93,11 @@ export class Game extends Scene
   }
 
   updateText(text: string) {
-    this.gameText.setText(text); 
   }
 
   showAttackMenu() {
     if (!this.playerTurn) return;
-  
-    this.attackButton.setVisible(true);
-    this.heavyAttackButton.setVisible(true);
+
   }
 
   checkWinLose() {
@@ -117,15 +108,6 @@ export class Game extends Scene
     } else if (this.enemyHP <= 0) {
       this.updateText("You win!");
     }
-  }
-
-  createPlayerSprite() {
-    this.playerSprite = this.add.sprite(256, 384, 'player');
-    // animations?
-  }
-  createEnemySprite() {
-    this.enemySprite = this.add.sprite(768, 384, 'enemy');
-    // animations?
   }
 
 }
