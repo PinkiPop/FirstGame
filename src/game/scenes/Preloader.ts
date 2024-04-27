@@ -33,11 +33,15 @@ export class Preloader extends Scene
         this.load.setPath('assets');
         this.load.image('logo', 'logo.png');
         this.load.image('star', 'star.png');
-        this.load.image('background3', 'background3.png')
-        this.load.audio('mainMenuAudio', 'mainMenuAudio.mp3')
-        setTimeout(()=>{
-            return 1;
-        }, 1000)
+        this.load.image('background3', 'background3.png');
+        this.load.image('enemy', 'enemy.png');
+        this.load.image('player1', 'player1.png');
+        this.load.image('enemyTalking', 'EnemyTalking.png');
+        this.load.image('fightMenu', 'FightMenu.png');
+        this.load.image('dialogueBox', 'Dialogue.png');
+        this.load.image('background2', 'background2.png');
+
+        
     }
 
     create ()
@@ -47,6 +51,7 @@ export class Preloader extends Scene
 
         //  Move to the MainMenu. You could also swap this for a Scene Transition, such as a camera fade.
         this.scene.start('MainMenu');
+        
 
     }
 }
