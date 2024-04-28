@@ -54,6 +54,7 @@ export class Game extends Scene {
     this.enemyTalking = this.add.image(500, 150, 'enemyTalking');
     this.enemyTalking.setScale(.5)
     this.enemyTalking.setVisible(false);
+    
     this.fightMenu = this.add.image(450, 650, 'fightMenu');
     this.fightMenu.setScale(.5)
     this.fightMenu.setVisible(false);
@@ -78,15 +79,17 @@ export class Game extends Scene {
       "Prepare to be defeated... Finally!",
     ];
 
+    this.heavyAttackButton.setVisible(false);
+    this.attackButton.setVisible(false);
     this.playerInput = false;
-    //this.fightLoop();
-
+    this.changeTurn(false);
   }
   //ends here
 
   
 
 updateText(text: string) {
+  //????
 }
 
 updateHealthBars() {
@@ -105,16 +108,37 @@ checkWinLose() {
   }
 }
 
+changeTurn(player:boolean){
+  this.enemyTalking.setVisible(false);
+  this.fightMenu.setVisible(false);
+  this.heavyAttackButton.setVisible(false);
+  this.attackButton.setVisible(false);
+  //add in all elements that u want to show, turn to false
+if (player){
+  console.log('Players Turn - attack now');
+  this.fightMenu.setVisible(true);
+  this.heavyAttackButton.setVisible(true);
+  this.attackButton.setVisible(true);
+  this.attackButton.on('pointerdown', () => this.attack('Attack'));
+  this.heavyAttackButton.on('pointerdown', () => this.attack('Heavy Attack'));
+  this.time.addEvent({ delay: 3000, callback: () => this.changeTurn(false), callbackScope: this })
+  //add events and wait to each event, set each one true one at a time.
+} else {
+  console.log('enemies turn - dialogue should show?');
+  this.initiateEnemyAttack();
+  this.enemyTalking.setVisible(true);
+  this.time.addEvent({delay: 3000, callback: () => this.changeTurn(true), callbackScope: this })
+}
+}
+
 initiateEnemyAttack() {
  console.log('Enemy attack yay');
-  const randomDialogueIndex = Math.floor(Math.random() * this.enemyDialogue.length);
-  this.enemyTalking.setVisible(true);
-  this.updateText(this.enemyDialogue[randomDialogueIndex]);
+  const randomIndex = Math.floor(Math.random() * this.enemyDialogue.length);
+  this.updateText(this.enemyDialogue[randomIndex]);
   //this.playerHP -= 20;
-  this.updateHealthBars();
-  this.checkWinLose();
+  //this.updateHealthBars();
+  //this.checkWinLose();
   this.enemyTalking.setVisible(false);
-  this.playerTurn = true;
 }
 
 attack(attackType: string) {
