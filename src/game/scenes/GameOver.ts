@@ -33,7 +33,7 @@ export class GameOver extends Scene
             align: 'center'
         }).setOrigin(0.5).setDepth(100);
 
-        this.returnText = this.add.text(512, 410, 'Play Again?',{
+        this.returnText = this.add.text(512, 550, 'Play Again?',{
             fontFamily: 'Arial Black', fontSize: 38, color: '#ffffff',
                 stroke: '#000000', strokeThickness: 8,
                 align: 'center',
