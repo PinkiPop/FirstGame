@@ -22,7 +22,6 @@ create ()
           duration: 700,
           amount: -1,
       });
-    this.camera.setBackgroundColor(0xff0000);
 
     this.background = this.add.image(512, 384, 'background');
     this.background.setAlpha(0.5);
