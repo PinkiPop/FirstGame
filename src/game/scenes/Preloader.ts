@@ -40,6 +40,9 @@ export class Preloader extends Scene
         this.load.image('fightMenu', 'FightMenu.png');
         this.load.image('dialogueBox', 'Dialogue.png');
         this.load.image('background2', 'background2.png');
+        this.load.image('enemyMain', 'enemyMain.png');
+        this.load.image('background4', 'background4.png');
+        this.load.image('background1', 'background1.png');
 
         
     }

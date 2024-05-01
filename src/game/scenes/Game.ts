@@ -18,14 +18,17 @@ export class Game extends Scene {
   enemyTalking: Phaser.GameObjects.Image;
   fightMenu: Phaser.GameObjects.Image;
   playerInput: boolean;
-  dialogueText: Phaser.GameObjects.Text;
-  dialoguePages: string[];
-  currentPage: number;
-  nextButton: Phaser.GameObjects.Text;
+  fightMenuAudio: Phaser.Sound.NoAudioSound | Phaser.Sound.HTML5AudioSound | Phaser.Sound.WebAudioSound;
 
   constructor() {
     super('Game');
   }
+  preload(){
+    this.load.setPath('assets');
+    this.load.audio('fightMenuAudio', 'FightMenuAudio.mp3');
+
+  }
+
 
   create() {
 
@@ -36,6 +39,13 @@ export class Game extends Scene {
       duration: 700,
       amount: -1,
     });
+
+    this.sound.removeByKey('mainEnemyAudio');
+    this.fightMenuAudio = this.sound.add('fightMenuAudio');
+    this.fightMenuAudio.play();
+    this.fightMenuAudio.setLoop(true);
+    this.fightMenuAudio.setVolume(.05);
+
 
     this.background = this.add.image(512, 384, 'background3');
     this.background.setAlpha(0.5);
@@ -70,6 +80,12 @@ export class Game extends Scene {
     }).setOrigin(0.5).setInteractive();
     console.log('heavy attack button created');
 
+    this.enemyDialogue = this.add.text(330, 80, 'The hooded figure hits you and you take 10 damage',{
+      fontFamily: 'Arial', fontSize: 35, color: '#000000',
+      align: 'center', wordWrap: { width: 390 }
+    });
+    this.enemyDialogue.setVisible(false);
+
     this.attackButton.on('pointerdown', () => this.attack('Attack'));
    this.heavyAttackButton.on('pointerdown', () => this.attack('Heavy Attack'));
 
@@ -88,50 +104,19 @@ this.setValue(enemyHealthBar,100)
     this.playerHP = 100;
     this.enemyHP = 100;
     this.playerTurn = false;
-
-    this.nextButton = this.add.text(512, 450, 'Next', {
-      fontFamily: 'Gotham', fontSize: 20, color: '#000000',
-      align: 'center'
-    }).setOrigin(0.5).setInteractive();
-
-    this.dialogueText = this.add.text(512, 150, '', {
-      fontFamily: 'Gotham', fontSize: 30, color: '#000000',
-      align: 'center', wordWrap: { width: 700 } // Adjust width for dialogue text wrapping
-    }).setOrigin(0.5);
   
 
 
     this.playerInput = false;
     this.changeTurn(false);
-    this.enemyTalking.setVisible(false);
    this.fightMenu.setVisible(false);
     this.attackButton.setVisible(false);
     this.heavyAttackButton.setVisible(false);
 
 
-    this.currentPage = 0;
-    this.dialoguePages = [
-      "You won't get away from me this time!",
-      "I've been waiting to crush you!",
-      "Prepare to be defeated... Finally!",
-    ];
-    this.updateDialogue();
-    this.nextButton.on('pointerdown', () => this.advanceDialogue());
   }
   //ends here
-  updateDialogue() {
-    this.dialogueText.setText(this.dialoguePages[this.currentPage]);
-  }
 
-  advanceDialogue() {
-    this.currentPage++;
-    if (this.currentPage >= this.dialoguePages.length) {
-//start fight loop
-    } else {
-      this.updateDialogue();
-      this.enemyTalking.setVisible(true);
-      this.time.addEvent({delay: 3000,})
-    }}
 
   makeBar(x: number, y: number, color: number) {
     let bar = this.add.graphics();
@@ -165,6 +150,7 @@ checkWinLose() {
 
 changeTurn(player:boolean){
   this.enemyTalking.setVisible(false);
+  this.enemyDialogue.setVisible(false);
   this.fightMenu.setVisible(false);
   this.attackButton.setVisible(false);
   this.heavyAttackButton.setVisible(false);
@@ -175,15 +161,22 @@ if (player){
  this.fightMenu.setVisible(true);
 this.heavyAttackButton.setVisible(true);
 this.attackButton.setVisible(true);
-  this.attackButton.on('pointerdown', () => this.attack('Attack'));
-  this.heavyAttackButton.on('pointerdown', () => this.attack('Heavy Attack'));
- // this.updateHealthBars();
+  this.attackButton.on('pointerdown', () => {
+    this.attack('Attack');
+  this.changeTurn(false);
+});
+  this.heavyAttackButton.on('pointerdown', () => {
+    this.attack('Heavy Attack');
+    this.changeTurn(false);
+  });
+ this.updateHealthBars();
   this.checkWinLose();
-  this.time.addEvent({ delay: 3000, callback: () => this.changeTurn(false), callbackScope: this })
   //add events and wait to each event, set each one true one at a time.
 } else {
-  console.log('enemies turn - dialogue should show?');
+  console.log('enemies turn');
   this.initiateEnemyAttack();
+  this.enemyTalking.setVisible(true);
+  this.enemyDialogue.setVisible(true);
   this.time.addEvent({delay: 3000, callback: () => this.changeTurn(true), callbackScope: this })
 }
 }
@@ -199,7 +192,7 @@ updateText(obj: Phaser.GameObjects.Text, text: string) {
 initiateEnemyAttack() {
  console.log('Enemy attack yay');
   this.playerHP -= 10;
- // this.updateHealthBars();
+ this.updateHealthBars();
   this.checkWinLose();
 }
 
@@ -223,7 +216,7 @@ attack(attackType: string) {
   this.enemyHP -= damage;
   //this.updateText(`You hit for ${damage} HP!`);
   console.log('you hit for ${damage} HP');
- // this.updateHealthBars();
+ this.updateHealthBars();
   this.checkWinLose();
   this.playerInput = true;
 }

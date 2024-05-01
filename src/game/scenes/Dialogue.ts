@@ -61,7 +61,7 @@ export class Dialogue extends Scene
   advanceDialogue() {
     this.currentPage++;
     if (this.currentPage >= this.dialoguePages.length) {
-      this.scene.start('Game');
+      this.scene.start('EnemyMain');
     } else {
       this.updateDialogue();
     }
@@ -70,5 +70,5 @@ export class Dialogue extends Scene
 
 changeScene ()
 {
-    this.scene.start('Game');
+    this.scene.start('EnemyMain');
 }}

@@ -7,11 +7,17 @@ export class GameOver extends Scene
     background: Phaser.GameObjects.Image;
     gameOverText : Phaser.GameObjects.Text;
     returnText: Phaser.GameObjects.Text;
+    GameOverAudio: Phaser.Sound.NoAudioSound | Phaser.Sound.HTML5AudioSound | Phaser.Sound.WebAudioSound;
 
     constructor ()
     {
         super('GameOver');
     }
+    preload(){
+        this.load.setPath('assets');
+        this.load.audio('GameOverAudio', 'GameOverAudio.mp3');
+    
+      }
 
     create ()
     {
@@ -23,6 +29,12 @@ export class GameOver extends Scene
           amount: -1,
       });
         //this.camera.setBackgroundColor(0xff0000);
+
+        this.sound.removeByKey('fightMenuAudio');
+        this.GameOverAudio = this.sound.add('GameOverAudio');
+        this.GameOverAudio.play();
+        this.GameOverAudio.setLoop(true);
+        this.GameOverAudio.setVolume(.05);
 
         this.background = this.add.image(512, 384, 'background');
         this.background.setAlpha(0.5);

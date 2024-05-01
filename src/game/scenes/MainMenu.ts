@@ -29,10 +29,10 @@ export class MainMenu extends Scene
           amount: -1,
       });
 
-
+      this.sound.removeByKey('GameOverAudio');
       this.mainMenuAudio = this.sound.add('mainMenuAudio');
 
-        this.background = this.add.image(512, 384, 'background');
+        this.background = this.add.image(512, 384, 'background1');
         this.logo = this.add.image(512, 300, 'logo').setDepth(100);
 
         this.title = this.add.text(512, 460, 'Start', {
