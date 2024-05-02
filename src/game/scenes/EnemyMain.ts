@@ -58,9 +58,9 @@ this.enemyMain.setScale(3);
 
     this.currentPage = 0;
     this.dialoguePages = [
-        "You won't get away from me this time!",
-        "I've been waiting to crush you!",
-        "Prepare to be defeated... Finally!",
+        "It seems like you have forgotten yourself.",
+        "I’m looking to take back what belongs to me, especially after all this time spent searching.",
+        "I will not let you get away.",
     ];
 
     this.updateDialogue();

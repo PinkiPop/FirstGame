@@ -1,6 +1,69 @@
 import { EventBus } from '../EventBus';
 import { Scene } from 'phaser';
 
+class HealthBar {
+  bar: Phaser.GameObjects.Graphics;
+  value: number;
+  p: number;
+
+  constructor (public scene: Scene, public x: number, public y: number)
+  {
+      this.bar = new Phaser.GameObjects.Graphics(scene);
+
+      this.x = x;
+      this.y = y;
+      this.value = 100;
+      this.p = 76 / 100;
+
+      this.draw();
+
+      scene.add.existing(this.bar);
+  }
+
+  decrease (amount: number)
+  {
+      this.value -= amount;
+
+      if (this.value < 0)
+      {
+          this.value = 0;
+      }
+
+      this.draw();
+
+      return (this.value === 0);
+  }
+
+  draw ()
+  {
+      this.bar.clear();
+
+      //  BG
+      this.bar.fillStyle(0x000000);
+      this.bar.fillRect(this.x, this.y, 80, 16);
+
+      //  Health
+
+      this.bar.fillStyle(0xffffff);
+      this.bar.fillRect(this.x + 2, this.y + 2, 76, 12);
+
+      if (this.value < 30)
+      {
+          this.bar.fillStyle(0xff0000);
+      }
+      else
+      {
+          this.bar.fillStyle(0x00ff00);
+      }
+
+      var d = Math.floor(this.p * this.value);
+
+      this.bar.fillRect(this.x + 2, this.y + 2, d, 12);
+  }
+
+}
+
+
 export class Game extends Scene {
   camera: Phaser.Cameras.Scene2D.Camera;
   background: Phaser.GameObjects.Image;
@@ -13,12 +76,12 @@ export class Game extends Scene {
   heavyAttackButton: Phaser.GameObjects.Text;
   playerSprite: Phaser.GameObjects.Image | undefined;
   enemySprite: Phaser.GameObjects.Image | undefined;
-  playerHealthBar: Phaser.GameObjects.Graphics;
-  enemyHealthBar: Phaser.GameObjects.Graphics;
   enemyTalking: Phaser.GameObjects.Image;
   fightMenu: Phaser.GameObjects.Image;
   playerInput: boolean;
   fightMenuAudio: Phaser.Sound.NoAudioSound | Phaser.Sound.HTML5AudioSound | Phaser.Sound.WebAudioSound;
+  playerHealthBar: any;
+  enemyHealthBar: any;
 
   constructor() {
     super('Game');
@@ -45,7 +108,6 @@ export class Game extends Scene {
     this.fightMenuAudio.play();
     this.fightMenuAudio.setLoop(true);
     this.fightMenuAudio.setVolume(.05);
-
 
     this.background = this.add.image(512, 384, 'background3');
     this.background.setAlpha(0.5);
@@ -89,17 +151,13 @@ export class Game extends Scene {
     this.attackButton.on('pointerdown', () => this.attack('Attack'));
    this.heavyAttackButton.on('pointerdown', () => this.attack('Heavy Attack'));
 
-this.gameText = this.add.text(100, 100, '', {
-  fontFamily: 'Arial', fontSize: 20, color: '#000000',
+this.gameText = this.add.text(360, 330, '', {
+  fontFamily: 'Arial', fontSize: 40, color: '#000000',
       align: 'center'
 })
 
-let playerHealthBar=this.makeBar(810,700,0x00ff00);
-this.setValue(playerHealthBar,100);
-
-let enemyHealthBar=this.makeBar(25, 10, 0xff0000);
-this.setValue(enemyHealthBar,100)
-
+this.enemyHealthBar = new HealthBar(this, 20, 20);
+this.playerHealthBar = new HealthBar(this, 900,700);
 
     this.playerHP = 100;
     this.enemyHP = 100;
@@ -108,34 +166,15 @@ this.setValue(enemyHealthBar,100)
 
 
     this.playerInput = false;
-    this.changeTurn(false);
    this.fightMenu.setVisible(false);
     this.attackButton.setVisible(false);
     this.heavyAttackButton.setVisible(false);
 
-
+    this.changeTurn(false);
   }
   //ends here
 
-
-  makeBar(x: number, y: number, color: number) {
-    let bar = this.add.graphics();
-    bar.fillStyle(color, 1);
-    bar.fillRect(0, 0, 200, 50);
-    bar.x = x;
-    bar.y = y;
-    return bar;
-}
-setValue(bar: Phaser.GameObjects.Graphics,percentage: number) {
-    //scale the bar
-    bar.scaleX = percentage/100;
-}
-
-updateHealthBars() {
-  this.playerHealthBar.scaleX = this.playerHP / 100;
-  this.enemyHealthBar.scaleX = this.enemyHP / 100;
-}
-
+ 
 checkWinLose() {
   if (this.playerHP <= 0) {
    //this.gameText.updateText("You have died!");
@@ -161,6 +200,8 @@ if (player){
  this.fightMenu.setVisible(true);
 this.heavyAttackButton.setVisible(true);
 this.attackButton.setVisible(true);
+this.attackButton.off('pointerdown');
+this.heavyAttackButton.off('pointerdown')
   this.attackButton.on('pointerdown', () => {
     this.attack('Attack');
   this.changeTurn(false);
@@ -169,14 +210,16 @@ this.attackButton.setVisible(true);
     this.attack('Heavy Attack');
     this.changeTurn(false);
   });
- this.updateHealthBars();
+
   this.checkWinLose();
   //add events and wait to each event, set each one true one at a time.
 } else {
   console.log('enemies turn');
-  this.initiateEnemyAttack();
   this.enemyTalking.setVisible(true);
   this.enemyDialogue.setVisible(true);
+  this.playerHP -= 10;
+  this.playerHealthBar.decrease(10);
+  this.checkWinLose();
   this.time.addEvent({delay: 3000, callback: () => this.changeTurn(true), callbackScope: this })
 }
 }
@@ -185,42 +228,49 @@ updateText(obj: Phaser.GameObjects.Text, text: string) {
   console.log('text should be updated');
  obj.setText(text);
  obj.setVisible(true);
- this.gameText.setVisible(true);
- this.gameText.setText('hello');
-}
-
-initiateEnemyAttack() {
- console.log('Enemy attack yay');
-  this.playerHP -= 10;
- this.updateHealthBars();
-  this.checkWinLose();
+ setTimeout(() => {
+  obj.setVisible(false);
+}, 500);
 }
 
 attack(attackType: string) {
   console.log('your attack!');
   let damage = 10;
+  let attackResult = ''; // Variable to hold the attack result message
+
   if (attackType === "Attack") {
-    if (Math.random() < 0.9) {
-      //this.gameText.updateText("Miss!");
+    if (Math.random() < 0.1) { // 10% chance of missing
+      // Missed the attack
       console.log('miss');
-      return;
+      attackResult = 'Miss!';
     }
   } else if (attackType === "Heavy Attack") {
-    damage = 20;
-    if (Math.random() < 0.7) {
-      //this.gameText.updateText("Miss!");
+    damage = 20; // Corrected: Reassigned the value of damage
+    if (Math.random() < 0.3) { // 30% chance of missing
+      // Missed the attack
       console.log('miss');
-      return;
+      attackResult = 'Miss!';
     }
   }
-  this.enemyHP -= damage;
-  //this.updateText(`You hit for ${damage} HP!`);
-  console.log('you hit for ${damage} HP');
- this.updateHealthBars();
-  this.checkWinLose();
+
+  if (attackResult === '') {
+    // Attack hits, decrease enemy's health
+    this.enemyHealthBar.decrease(damage); // Decrease enemy's health
+
+    this.enemyHP -= damage;
+    console.log(`you hit for ${damage} HP`);
+    attackResult = `You hit for ${damage} HP`;
+    this.checkWinLose();
+  }
+
+  // Display the attack result message on the screen
+  this.updateText(this.gameText, attackResult);
+
   this.playerInput = true;
 }
 }
+
+
 
 
 
