@@ -2,7 +2,7 @@ import { EventBus } from '../EventBus';
 import { Scene } from 'phaser';
 
 
-export class Dialogue extends Scene
+export class Dialogue5 extends Scene
 {
   camera: Phaser.Cameras.Scene2D.Camera;
   background: Phaser.GameObjects.TileSprite;
@@ -10,17 +10,15 @@ export class Dialogue extends Scene
   currentPage: number;
   dialoguePages: string[];
   dialogueBox: Phaser.GameObjects.Image;
-  DialogueAudio: Phaser.Sound.NoAudioSound | Phaser.Sound.HTML5AudioSound | Phaser.Sound.WebAudioSound;
 
   constructor ()
   {
-    super('Dialogue');
+    super('Dialogue5');
   }
   preload(){
     this.load.setPath('assets');
-    this.load.image('dialogue1', 'Dialogue1.png')
+    this.load.image('dialogue5', 'Dialogue5.png')
     this.load.image('dialogueBox', 'dialogueBox.png');
-    this.load.audio('DialogueAudio', 'DialogueAudio.mp3');
   }
   create ()
   {
@@ -32,13 +30,7 @@ export class Dialogue extends Scene
           amount: -1,
       });
 
-    this.sound.removeByKey('mainMenuAudio');
-this.DialogueAudio = this.sound.add('DialogueAudio');
-this.DialogueAudio.play();
-    this.DialogueAudio.setLoop(true);
-    this.DialogueAudio.setVolume(.05);
-
-    this.background = this.add.tileSprite(512, 384, 1024, 768, 'dialogue1');
+    this.background = this.add.tileSprite(512, 384, 1024, 768, 'dialogue5');
     this.background.setOrigin(0.5);
 
     //this.background.postFX.addVignette(0.5, 0.5, 0.7);
@@ -55,16 +47,16 @@ this.DialogueAudio.play();
 
     this.currentPage = 0;
     this.dialoguePages = [
-      "There is an Old Tale…",
-      "A lake that grants wishes, or so I’ve been told.",
-      "Stories of this place have been passed down, diluted by verbal tradition.",
+      "...granting her a crude joke of everlasting life.",
+      "They say every 100 years she is reincarnated into a poor unsuspecting human soul.",
+      "But… that’s just the way I heard it.",
     ];
 
     this.updateDialogue();
   }
 
   update() {
-    this.background.tilePositionY -= 1;
+    this.background.tilePositionX -= 1;
   }
 
   updateDialogue() {
@@ -86,12 +78,12 @@ this.DialogueAudio.play();
       };
       addLetter();
     } else {
-      this.scene.start('Dialogue2');
+      this.scene.start('EnemyMain');
     }
   }
 
 
 changeScene ()
 {
-    this.scene.start('Dialogue2');
+    this.scene.start('EnemyMain');
 }}

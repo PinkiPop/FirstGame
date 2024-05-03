@@ -2,7 +2,7 @@ import { EventBus } from '../EventBus';
 import { Scene } from 'phaser';
 
 
-export class Dialogue extends Scene
+export class Dialogue4 extends Scene
 {
   camera: Phaser.Cameras.Scene2D.Camera;
   background: Phaser.GameObjects.TileSprite;
@@ -10,17 +10,15 @@ export class Dialogue extends Scene
   currentPage: number;
   dialoguePages: string[];
   dialogueBox: Phaser.GameObjects.Image;
-  DialogueAudio: Phaser.Sound.NoAudioSound | Phaser.Sound.HTML5AudioSound | Phaser.Sound.WebAudioSound;
 
   constructor ()
   {
-    super('Dialogue');
+    super('Dialogue4');
   }
   preload(){
     this.load.setPath('assets');
-    this.load.image('dialogue1', 'Dialogue1.png')
+    this.load.image('dialogue4', 'Dialogue4.png')
     this.load.image('dialogueBox', 'dialogueBox.png');
-    this.load.audio('DialogueAudio', 'DialogueAudio.mp3');
   }
   create ()
   {
@@ -32,16 +30,10 @@ export class Dialogue extends Scene
           amount: -1,
       });
 
-    this.sound.removeByKey('mainMenuAudio');
-this.DialogueAudio = this.sound.add('DialogueAudio');
-this.DialogueAudio.play();
-    this.DialogueAudio.setLoop(true);
-    this.DialogueAudio.setVolume(.05);
-
-    this.background = this.add.tileSprite(512, 384, 1024, 768, 'dialogue1');
+    this.background = this.add.tileSprite(512, 384, 1024, 768, 'dialogue4');
     this.background.setOrigin(0.5);
 
-    //this.background.postFX.addVignette(0.5, 0.5, 0.7);
+   // this.background.postFX.addVignette(0.5, 0.5, 0.7);
 
 
     this.dialogueBox = this.add.image(510, 600, 'dialogueBox');
@@ -55,9 +47,9 @@ this.DialogueAudio.play();
 
     this.currentPage = 0;
     this.dialoguePages = [
-      "There is an Old Tale…",
-      "A lake that grants wishes, or so I’ve been told.",
-      "Stories of this place have been passed down, diluted by verbal tradition.",
+      "A beautiful human with unheard of inner strength.",
+      "It is fabled that the devil was amused with this human, her survival seemingly impossible…",
+      "It seems his amusement grew into obsession, and he fell in love with this human...",
     ];
 
     this.updateDialogue();
@@ -86,12 +78,12 @@ this.DialogueAudio.play();
       };
       addLetter();
     } else {
-      this.scene.start('Dialogue2');
+      this.scene.start('Dialogue5');
     }
   }
 
 
 changeScene ()
 {
-    this.scene.start('Dialogue2');
+    this.scene.start('Dialogue5');
 }}
