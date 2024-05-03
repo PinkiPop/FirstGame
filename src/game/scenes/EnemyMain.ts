@@ -28,7 +28,7 @@ export class EnemyMain extends Scene
   {
     this.cameras.main = this.cameras.main;
 
-this.sound.removeByKey('mainMenuAudio');
+this.sound.removeByKey('DialogueAudio');
 this.mainEnemyAudio = this.sound.add('mainEnemyAudio');
 this.mainEnemyAudio.play();
     this.mainEnemyAudio.setLoop(true);

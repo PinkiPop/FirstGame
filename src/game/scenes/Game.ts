@@ -212,7 +212,6 @@ this.heavyAttackButton.off('pointerdown')
   });
 
   this.checkWinLose();
-  //add events and wait to each event, set each one true one at a time.
 } else {
   console.log('enemies turn');
   this.enemyTalking.setVisible(true);
@@ -236,26 +235,23 @@ updateText(obj: Phaser.GameObjects.Text, text: string) {
 attack(attackType: string) {
   console.log('your attack!');
   let damage = 10;
-  let attackResult = ''; // Variable to hold the attack result message
+  let attackResult = '';
 
   if (attackType === "Attack") {
-    if (Math.random() < 0.1) { // 10% chance of missing
-      // Missed the attack
+    if (Math.random() < 0.1) { 
       console.log('miss');
       attackResult = 'Miss!';
     }
   } else if (attackType === "Heavy Attack") {
-    damage = 20; // Corrected: Reassigned the value of damage
-    if (Math.random() < 0.3) { // 30% chance of missing
-      // Missed the attack
+    damage = 20; 
+    if (Math.random() < 0.2) { 
       console.log('miss');
       attackResult = 'Miss!';
     }
   }
 
   if (attackResult === '') {
-    // Attack hits, decrease enemy's health
-    this.enemyHealthBar.decrease(damage); // Decrease enemy's health
+    this.enemyHealthBar.decrease(damage);
 
     this.enemyHP -= damage;
     console.log(`you hit for ${damage} HP`);
@@ -263,7 +259,6 @@ attack(attackType: string) {
     this.checkWinLose();
   }
 
-  // Display the attack result message on the screen
   this.updateText(this.gameText, attackResult);
 
   this.playerInput = true;
