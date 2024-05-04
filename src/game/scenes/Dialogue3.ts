@@ -10,6 +10,7 @@ export class Dialogue3 extends Scene
   currentPage: number;
   dialoguePages: string[];
   dialogueBox: Phaser.GameObjects.Image;
+  skipButton: Phaser.GameObjects.Text;
 
   constructor ()
   {
@@ -44,6 +45,23 @@ export class Dialogue3 extends Scene
       align: 'center', wordWrap: { width: 400 } // Adjust width for dialogue text wrapping
     }).setOrigin(0.5);
 
+    this.skipButton = this.add.text(900, 50, 'skip', {
+      fontFamily: 'Arial Black', fontSize: 20, color: '#ffffff',
+      stroke: '#000000', strokeThickness: 8,
+      align: 'center',
+    }).setOrigin(0.5).setDepth(100);
+    
+    this.skipButton.setInteractive();
+    this.skipButton.on('pointerover', () => {
+    this.sys.canvas.style.cursor = 'pointer';
+    });
+    
+    this.skipButton.on('pointerout', () => {
+    this.sys.canvas.style.cursor = 'default';
+    });
+    this.skipButton.on('pointerdown', () => {
+    this.scene.start('EnemyMain');
+    });
 
     this.currentPage = 0;
     this.dialoguePages = [
